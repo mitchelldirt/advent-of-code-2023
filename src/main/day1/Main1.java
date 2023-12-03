@@ -1011,7 +1011,8 @@ public class Main1 {
 
 
     public static void main(String[] args) {
-        int calibrationSum = Calibration.sumOfCalibration(INPUT);
+        Calibration calibration = new Calibration();
+        int calibrationSum = calibration.sumOfCalibration(INPUT);
 
         System.out.println(calibrationSum);
     }

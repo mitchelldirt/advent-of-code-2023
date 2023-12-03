@@ -1,9 +1,9 @@
 package main.day1;
 
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 public class Calibration {
     // TODO: Make this code actually work lol
@@ -12,7 +12,19 @@ public class Calibration {
     // then you need to get the sum of all of the lines where you perform that operation
     // You'll need to fully rework the below code though
 
-    static final enum numbers = "one";
+    private static Map<String, String> numbers = new HashMap<>();
+
+    public Calibration() {
+        numbers.put("one", "1");
+        numbers.put("two", "2");
+        numbers.put("three", "3");
+        numbers.put("four", "4");
+        numbers.put("five", "5");
+        numbers.put("six", "6");
+        numbers.put("seven", "7");
+        numbers.put("eight", "8");
+        numbers.put("nine", "9");
+    }
 
     static int sumOfCalibration(String input) {
         int sum = 0;
@@ -21,6 +33,19 @@ public class Calibration {
             String firstNumber = findFirstNumber(value);
             String lastNumber = findLastNumber(value);
 
+            if (firstNumber.isEmpty()) {
+                firstNumber = lastNumber;
+            }
+
+            if (lastNumber.isEmpty()) {
+                lastNumber = firstNumber;
+            }
+
+            // Both were empty
+            if (firstNumber.isEmpty()) {
+                continue;
+            }
+
             sum += Integer.parseInt(firstNumber.concat(lastNumber));
         }
 
@@ -28,25 +53,84 @@ public class Calibration {
     }
 
     private static String findFirstNumber (String input) {
-        Matcher matcher = Pattern.compile("\\d").matcher(input);
+        // Try parsing the first character to check that it is an int
+        try {
+            String firstChar = input.split("")[0];
+            int num = Integer.parseInt(firstChar);
+            return firstChar;
+        } catch(NumberFormatException ignored){};
 
-        if (matcher.find()) {
-            return matcher.group();
+        int indexOfNumber = 999;
+        String firstNumber = "";
+
+        for (Map.Entry<String, String> entry : numbers.entrySet()) {
+            String key = entry.getKey();
+
+            int index = input.indexOf(key);
+            if (index != -1 && index < indexOfNumber) {
+                indexOfNumber = index;
+                firstNumber = entry.getValue();
+            }
+        }
+
+        int firstDigitIndex = findFirstDigitIndex(input);
+        if (firstDigitIndex < indexOfNumber && firstDigitIndex != -1) {
+            return input.split("")[firstDigitIndex];
         }
 
         // If no number return an empty string
-        return "";
+        return firstNumber;
     }
 
     private static String findLastNumber (String input) {
-        String reversedInput = new StringBuilder(input).reverse().toString();
-        Matcher matcher = Pattern.compile("\\d").matcher(reversedInput);
+        // Try parsing the last character to check that if is an int
+        try {
+            String lastChar = input.split("")[input.length() - 1];
+            int num = Integer.parseInt(lastChar);
+            return lastChar;
+        } catch(NumberFormatException ignored){};
 
-        if (matcher.find()) {
-            return matcher.group();
+        int largestIndex = -1;
+        String lastNumber = "";
+
+        for (Map.Entry<String, String> entry : numbers.entrySet()) {
+            String key = entry.getKey();
+
+            int index = input.lastIndexOf(key);
+            if (index != -1 && index > largestIndex) {
+                largestIndex = index;
+                lastNumber = entry.getValue();
+            }
+        }
+
+        int lastDigitIndex = findLastDigitIndex(input);
+        if (lastDigitIndex != -1 && lastDigitIndex > largestIndex) {
+            return input.split("")[lastDigitIndex];
         }
 
         // If no number return an empty string
-        return "";
+        return lastNumber;
+    }
+
+    private static int findFirstDigitIndex(String input) {
+        for (int i = 0; i < input.length(); i++) {
+            char currentChar = input.charAt(i);
+            if (Character.isDigit(currentChar)) {
+                return i;
+            }
+        }
+        // Return -1 if no digit is found
+        return -1;
+    }
+
+    private static int findLastDigitIndex(String input) {
+        for (int i = input.length() - 1; i > -1; i--) {
+            char currentChar = input.charAt(i);
+            if (Character.isDigit(currentChar)) {
+                return i;
+            }
+        }
+        // Return -1 if no digit is found
+        return -1;
     }
 }
