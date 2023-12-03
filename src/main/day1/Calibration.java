@@ -1,6 +1,8 @@
 package main.day1;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class Calibration {
@@ -10,12 +12,41 @@ public class Calibration {
     // then you need to get the sum of all of the lines where you perform that operation
     // You'll need to fully rework the below code though
 
-    static IntStream sumOfCalibration (String input) {
+    static final enum numbers = "one";
+
+    static int sumOfCalibration(String input) {
+        int sum = 0;
         String[] values = input.split("\\n");
-        return Arrays.stream(values).mapToInt(Calibration::sum);
+        for (String value : values) {
+            String firstNumber = findFirstNumber(value);
+            String lastNumber = findLastNumber(value);
+
+            sum += Integer.parseInt(firstNumber.concat(lastNumber));
+        }
+
+        return sum;
     }
 
-    private static int sum(String input) {
-        return input.lines().mapToInt(Integer::parseInt).sum();
+    private static String findFirstNumber (String input) {
+        Matcher matcher = Pattern.compile("\\d").matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+
+        // If no number return an empty string
+        return "";
+    }
+
+    private static String findLastNumber (String input) {
+        String reversedInput = new StringBuilder(input).reverse().toString();
+        Matcher matcher = Pattern.compile("\\d").matcher(reversedInput);
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+
+        // If no number return an empty string
+        return "";
     }
 }
