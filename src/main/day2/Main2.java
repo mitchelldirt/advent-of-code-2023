@@ -2,7 +2,7 @@ package main.day2;
 
 public class Main2 {
     public static void main(String[] args) {
-        System.out.println(CubeGame.sumOfPosibleGameIds(input));
+        System.out.println(CubeGame.fewestNumberCubes(input));
     }
 
     static final String input =

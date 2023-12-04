@@ -23,6 +23,36 @@ public class CubeGame {
         return sum;
     }
 
+    static int fewestNumberCubes(String input) {
+        int sum = 0;
+
+        String[] inputs = input.split("\\n");
+
+        for (String line: inputs) {
+            Game[] hands = createGames(line);
+
+            int fewestRed = 0;
+            int fewestGreen = 0;
+            int fewestBlue = 0;
+
+            for (Game hand: hands) {
+                if (hand == null) continue;
+
+                int redQty = hand.getRed();
+                int greenQty = hand.getGreen();
+                int blueQty = hand.getBlue();
+
+                if (redQty > fewestRed) fewestRed = redQty;
+                if (greenQty > fewestGreen) fewestGreen = greenQty;
+                if (blueQty > fewestBlue) fewestBlue = blueQty;
+            }
+
+            sum += (fewestRed * fewestGreen * fewestBlue);
+        }
+
+        return sum;
+    }
+
     private static Game[] createGames(String input) {
         Game[] games = new Game[10];
         int gameIndex =  0;
